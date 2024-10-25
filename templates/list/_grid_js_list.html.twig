@@ -1,0 +1,13 @@
+<div id="transaction-list"></div>
+
+<script type="module">
+    import { Grid } from "gridjs";
+    import 'gridjs/dist/theme/mermaid.min.css';
+
+    const grid = new Grid({
+        columns: {{ list.columns|json_encode|raw }},
+        data: {{ list.data|json_encode|raw }},
+    });
+
+    grid.render(document.getElementById("transaction-list"));
+</script>

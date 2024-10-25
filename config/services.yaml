@@ -1,0 +1,25 @@
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    Jeandanyel\ListBundle\:
+        resource: '../src/'
+        exclude:
+            - '../src/List/ResolvedListType.php'
+    
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    # Jeandanyel\ListBundle\Registry\ColumnRegistryInterface: '@Jeandanyel\ListBundle\Registry\ColumnRegistry'
+    # Jeandanyel\ListBundle\Registry\ListRegistryInterface: '@Jeandanyel\ListBundle\Registry\ListRegistry'
+
+    Jeandanyel\ListBundle\Registry\ListRegistry:
+        arguments:
+            $types: !tagged_iterator list.list_type
+    
+    Jeandanyel\ListBundle\Registry\ColumnRegistry:
+        arguments:
+            $types: !tagged_iterator list.column_type
