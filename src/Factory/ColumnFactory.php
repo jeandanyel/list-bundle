@@ -21,6 +21,7 @@ class ColumnFactory implements ColumnFactoryInterface
         $column->setLabel($resolvedOptions['label']);
         $column->setSortable($resolvedOptions['sortable']);
         $column->setSearchable($resolvedOptions['searchable']);
+        $column->setValueResolver($resolvedOptions['value_resolver']);
 
         return $column;
     }

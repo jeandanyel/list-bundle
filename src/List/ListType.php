@@ -4,6 +4,7 @@ namespace Jeandanyel\ListBundle\List;
 
 use Jeandanyel\ListBundle\Builder\ListBuilderInterface;
 use Jeandanyel\ListBundle\Provider\DataProvider;
+use Jeandanyel\ListBundle\Provider\DataProviderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ListType extends AbstractListType
@@ -20,6 +21,8 @@ class ListType extends AbstractListType
             'data_provider' => $this->dataProvider,
             'data' => null,
         ]);
+
+        $optionsResolver->setAllowedTypes('data_provider', DataProviderInterface::class);
     }
 
     public function getParent(): ?string

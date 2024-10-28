@@ -4,14 +4,10 @@ namespace Jeandanyel\ListBundle\Provider;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Jeandanyel\ListBundle\List\ListInterface;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class DataProvider implements DataProviderInterface
 {
-    public function __construct(
-        private EntityManagerInterface $entityManager,
-        private PropertyAccessorInterface $propertyAccessor,
-    ) {}
+    public function __construct(private EntityManagerInterface $entityManager) {}
 
     public function getData(ListInterface $list): array
     {
@@ -22,7 +18,7 @@ class DataProvider implements DataProviderInterface
             $data[$index] = [];
 
             foreach ($list->getColumns() as $column) {
-                $data[$index][$column->getName()] = (string) $this->propertyAccessor->getValue($entity, $column->getName());
+                $data[$index][$column->getName()] = (string) $column->getValue($entity, $column->getName());
             }
         }
 

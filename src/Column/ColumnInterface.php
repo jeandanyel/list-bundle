@@ -19,4 +19,10 @@ interface ColumnInterface
     public function isSearchable(): bool;
 
     public function setSearchable(bool $searchable): self;
+
+    public function setValueResolver(callable $valueResolver): self;
+
+    public function getValueResolver(): callable;
+
+    public function getValue(mixed $object): mixed;
 }

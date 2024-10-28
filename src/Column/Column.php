@@ -9,6 +9,11 @@ class Column implements ColumnInterface
     private bool $sortable = false;
     private bool $searchable = false;
 
+    /**
+     * @var callable
+     */
+    private $valueResolver;
+
     public function getName(): string
     {
         return $this->name;
@@ -55,5 +60,24 @@ class Column implements ColumnInterface
         $this->searchable = $searchable;
 
         return $this;
+    }
+
+    public function setValueResolver(callable $valueResolver): self
+    {
+        $this->valueResolver = $valueResolver;
+
+        return $this;
+    }
+
+    public function getValueResolver(): callable
+    {
+        return $this->valueResolver;
+    }
+
+    public function getValue(mixed $object): mixed
+    {
+        $valueResolver = $this->getValueResolver();
+
+        return $valueResolver($object, $this);
     }
 }
