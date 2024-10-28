@@ -47,6 +47,7 @@ class ListBuilder implements ListBuilderInterface
 
         $list->setEntityClass($this->options['entity_class']);
         $list->setDataProvider($this->options['data_provider']);
+        $list->setQueryBuilder($this->options['query_builder']);
 
         foreach ($this->unresolvedColumns as $name => [$columnTypeClass, $options]) {
             $column = $this->columnFactory->create($name, $columnTypeClass, $options);

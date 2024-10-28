@@ -11,6 +11,11 @@ class GridJsList implements ListInterface
     private DataProviderInterface $dataProvider;
 
     /**
+     * @var callable|null
+     */
+    private $queryBuilder;
+
+    /**
      * @var array<string, Column>
      */
     private array $columns = [];
@@ -27,6 +32,11 @@ class GridJsList implements ListInterface
         return $this->entityClass;
     }
 
+    public function getDataProvider(): DataProviderInterface
+    {
+        return $this->dataProvider;
+    }
+
     public function setDataProvider(DataProviderInterface $dataProvider): self
     {
         $this->dataProvider = $dataProvider;
@@ -34,9 +44,16 @@ class GridJsList implements ListInterface
         return $this;
     }
 
-    public function getDataProvider(): DataProviderInterface
+    public function getQueryBuilder(): ?callable
     {
-        return $this->dataProvider;
+        return $this->queryBuilder;
+    }
+
+    public function setQueryBuilder(?callable $queryBuilder): self
+    {
+        $this->queryBuilder = $queryBuilder;
+
+        return $this;
     }
 
     public function addColumn(Column $column): self

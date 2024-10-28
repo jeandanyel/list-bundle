@@ -15,6 +15,10 @@ interface ListInterface
 
     public function getDataProvider(): DataProviderInterface;
 
+    public function getQueryBuilder(): ?callable;
+
+    public function setQueryBuilder(?callable $queryBuilder): self;
+
     public function addColumn(Column $column): self;
 
     /**

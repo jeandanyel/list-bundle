@@ -5,7 +5,7 @@ namespace Jeandanyel\ListBundle\Provider;
 use Doctrine\ORM\EntityManagerInterface;
 use Jeandanyel\ListBundle\List\ListInterface;
 
-class DataProvider implements DataProviderInterface
+class EntityDataProvider implements DataProviderInterface
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
@@ -14,7 +14,16 @@ class DataProvider implements DataProviderInterface
         $repository = $this->entityManager->getRepository($list->getEntityClass());
         $data = [];
 
-        foreach ($repository->findAll() as $index => $entity) {
+        if ($list->getQueryBuilder()) {
+            $callable = $list->getQueryBuilder();
+            $queryBuilder = $callable($repository);
+        } else {
+            $queryBuilder = $repository->createQueryBuilder('e');
+        }
+
+        $result = $queryBuilder->getQuery()->getResult();
+
+        foreach ($result as $index => $entity) {
             $data[$index] = [];
 
             foreach ($list->getColumns() as $column) {
