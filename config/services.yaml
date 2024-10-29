@@ -13,9 +13,6 @@ services:
     
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    # Jeandanyel\ListBundle\Registry\ColumnRegistryInterface: '@Jeandanyel\ListBundle\Registry\ColumnRegistry'
-    # Jeandanyel\ListBundle\Registry\ListRegistryInterface: '@Jeandanyel\ListBundle\Registry\ListRegistry'
-
     Jeandanyel\ListBundle\Registry\ListRegistry:
         arguments:
             $types: !tagged_iterator list.list_type
@@ -23,3 +20,4 @@ services:
     Jeandanyel\ListBundle\Registry\ColumnRegistry:
         arguments:
             $types: !tagged_iterator list.column_type
+

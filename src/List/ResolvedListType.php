@@ -5,6 +5,7 @@ namespace Jeandanyel\ListBundle\List;
 use Jeandanyel\ListBundle\Builder\ListBuilder;
 use Jeandanyel\ListBundle\Builder\ListBuilderInterface;
 use Jeandanyel\ListBundle\Factory\ColumnFactoryInterface;
+use Jeandanyel\ListBundle\Mapper\RequestHandlerMapper;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ResolvedListType implements ResolvedListTypeInterface
@@ -50,15 +51,15 @@ class ResolvedListType implements ResolvedListTypeInterface
         return $this->optionsResolver;
     }
 
-    public function createBuilder(ColumnFactoryInterface $columnFactory, array $options = []): ListBuilderInterface
+    public function createBuilder(ColumnFactoryInterface $columnFactory, RequestHandlerMapper $requestHandlerMapper, array $options = []): ListBuilderInterface
     {
         try {
             $options = $this->getOptionsResolver()->resolve($options);
         } catch (\Throwable $e) {
-            throw new $e(sprintf('An error has occurred resolving the options of the form "%s": ', get_debug_type($this->getInnerType())).$e->getMessage(), $e->getCode(), $e);
+            throw new $e(sprintf('An error has occurred resolving the options of the list "%s": ', get_debug_type($this->getInnerType())).$e->getMessage(), $e->getCode(), $e);
         }
 
-        $builder = new ListBuilder($columnFactory, $options);
+        $builder = new ListBuilder($columnFactory, $requestHandlerMapper, $options);
 
         $builder->setType($this);
 

@@ -3,6 +3,7 @@
 namespace Jeandanyel\ListBundle;
 
 use Jeandanyel\ListBundle\Column\ColumnTypeInterface;
+use Jeandanyel\ListBundle\Handler\RequestHandlerInterface;
 use Jeandanyel\ListBundle\List\ListTypeInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -20,6 +21,10 @@ class JeandanyelListBundle extends AbstractBundle
 
         $builder->registerForAutoconfiguration(ColumnTypeInterface::class)
             ->addTag('list.column_type')
+        ;
+
+        $builder->registerForAutoconfiguration(RequestHandlerInterface::class)
+            ->addTag('list.request_handler')
         ;
     }
 }

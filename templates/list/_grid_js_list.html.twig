@@ -4,9 +4,28 @@
     import { Grid } from "gridjs";
     import 'gridjs/dist/theme/mermaid.min.css';
 
+    const formData = new FormData();
+
+    formData.append('list_type_class', "{{ list.type|e('js') }}");
+
     const grid = new Grid({
         columns: {{ list.columns|json_encode|raw }},
-        data: {{ list.data|json_encode|raw }},
+        server: {
+            url: '/list/get-data', // todo: generate route
+            method: 'POST',
+            body: formData,
+            then: response => response.data.map(row => [...row]),
+            total: response => response.total,
+        },
+        {% if list.pagination is not null %}
+        pagination: {
+            limit: {{ list.pagination.limit }},
+            page: {{ list.pagination.page }},
+            server: {
+                url: (prev, page) => `${prev}?page=${page}`
+            }
+        }
+        {% endif %}
     });
 
     grid.render(document.getElementById("transaction-list"));

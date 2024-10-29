@@ -3,9 +3,10 @@
 namespace Jeandanyel\ListBundle\Builder;
 
 use Jeandanyel\ListBundle\Factory\ColumnFactoryInterface;
-use Jeandanyel\ListBundle\List\GridJsList;
 use Jeandanyel\ListBundle\List\ListInterface;
 use Jeandanyel\ListBundle\List\ResolvedListTypeInterface;
+use Jeandanyel\ListBundle\Mapper\RequestHandlerMapper;
+use Jeandanyel\ListBundle\Pagination\Pagination;
 
 class ListBuilder implements ListBuilderInterface
 {
@@ -14,7 +15,8 @@ class ListBuilder implements ListBuilderInterface
 
     public function __construct(
         private ColumnFactoryInterface $columnFactory,
-        private array $options = []
+        private RequestHandlerMapper $requestHandlerMapper,
+        private array $options = [],
     ) {}
 
     public function setType(ResolvedListTypeInterface $type): self
@@ -43,12 +45,36 @@ class ListBuilder implements ListBuilderInterface
 
     public function getList(): ListInterface
     {
-        $list = new GridJsList();
+        $listClass = $this->options['list_class'];
+    
+        if (!class_exists($listClass)) {
+            throw new \RuntimeException("The class $listClass does not exist.");
+        }
 
+        $list = new $listClass();
+
+        $list->setType($this->type->getInnerType());
         $list->setEntityClass($this->options['entity_class']);
         $list->setDataProvider($this->options['data_provider']);
         $list->setQueryBuilder($this->options['query_builder']);
 
+        $requestHandler = $this->options['request_handler'];
+
+        if (!$requestHandler) {
+            $requestHandler = $this->requestHandlerMapper->get($listClass);
+        }
+        
+        $list->setRequestHandler($requestHandler);
+
+        if ($this->options['pagination'] === true) {
+            $pagination = new Pagination();
+
+            $pagination->setPage($this->options['pagination_page']);
+            $pagination->setLimit($this->options['pagination_limit']);
+
+            $list->setPagination($pagination);
+        }
+        
         foreach ($this->unresolvedColumns as $name => [$columnTypeClass, $options]) {
             $column = $this->columnFactory->create($name, $columnTypeClass, $options);
             

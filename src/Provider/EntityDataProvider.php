@@ -3,6 +3,7 @@
 namespace Jeandanyel\ListBundle\Provider;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Jeandanyel\ListBundle\List\ListInterface;
 
 class EntityDataProvider implements DataProviderInterface
@@ -11,14 +12,14 @@ class EntityDataProvider implements DataProviderInterface
 
     public function getData(ListInterface $list): array
     {
-        $repository = $this->entityManager->getRepository($list->getEntityClass());
         $data = [];
+        $queryBuilder = $this->getQueryBuilder($list);
 
-        if ($list->getQueryBuilder()) {
-            $callable = $list->getQueryBuilder();
-            $queryBuilder = $callable($repository);
-        } else {
-            $queryBuilder = $repository->createQueryBuilder('e');
+        if ($list->getPagination() !== null) {
+            $pagination = $list->getPagination();
+
+            $queryBuilder->setFirstResult($pagination->getOffset());
+            $queryBuilder->setMaxResults($pagination->getLimit());
         }
 
         $result = $queryBuilder->getQuery()->getResult();
@@ -32,5 +33,33 @@ class EntityDataProvider implements DataProviderInterface
         }
 
         return $data;
+    }
+
+    public function getTotal(ListInterface $list): int
+    {
+        $queryBuilder = clone $this->getQueryBuilder($list);
+        $rootAlias = $queryBuilder->getRootAliases()[0];
+
+        $queryBuilder->select("COUNT($rootAlias.id)");
+
+        return $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+    private function getQueryBuilder(ListInterface $list): QueryBuilder
+    {
+        $repository = $this->entityManager->getRepository($list->getEntityClass());
+
+        if ($list->getQueryBuilder()) {
+            $callable = $list->getQueryBuilder();
+
+            /**
+             * @var QueryBuilder
+             */
+            $queryBuilder = $callable($repository);
+        } else {
+            $queryBuilder = $repository->createQueryBuilder('e');
+        }
+
+        return $queryBuilder;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Jeandanyel\ListBundle\List;
 
+use Jeandanyel\ListBundle\Pagination\Pagination;
+
 class GridJsListView implements ListViewInterface
 {
     private ListInterface $list;
@@ -11,11 +13,21 @@ class GridJsListView implements ListViewInterface
         return '@JeandanyelList/list/_grid_js_list.html.twig';
     }
 
+    public function getList(): ListInterface
+    {
+        return $this->list;
+    }
+
     public function setList(ListInterface $list): self
     {
         $this->list = $list;
 
         return $this;
+    }
+
+    public function getType(): string
+    {
+        return get_class($this->list->getType());
     }
 
     public function getColumns(): array
@@ -41,5 +53,17 @@ class GridJsListView implements ListViewInterface
         }
 
         return $array;
+    }
+
+    public function getTotal(): int
+    {
+        $dataProvider = $this->list->getDataProvider();
+
+        return $dataProvider->getTotal($this->list);
+    }
+
+    public function getPagination(): ?Pagination
+    {
+        return $this->list->getPagination();
     }
 }
