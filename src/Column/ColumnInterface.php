@@ -24,5 +24,13 @@ interface ColumnInterface
 
     public function getValueResolver(): callable;
 
+    public function setValueFormatter(?callable $valueFormatter): self;
+
+    public function getValueFormatter(): ?callable;
+
     public function getValue(mixed $object): mixed;
+
+    public function getOptions(): array;
+
+    public function setOptions(array $options): self;
 }

@@ -2,7 +2,7 @@
 
 namespace Jeandanyel\ListBundle\Factory;
 
-use Jeandanyel\ListBundle\Column\Column;
+use Jeandanyel\ListBundle\Builder\ColumnBuilderInterface;
 use Jeandanyel\ListBundle\Column\ColumnInterface;
 use Jeandanyel\ListBundle\Registry\ColumnRegistryInterface;
 
@@ -12,17 +12,16 @@ class ColumnFactory implements ColumnFactoryInterface
 
     public function create(string $name, string $columnTypeClass, array $options = []): ColumnInterface
     {
+        return $this->createBuilder($name, $columnTypeClass, $options)->getColumn();
+    }
+
+    public function createBuilder(string $name, string $columnTypeClass, array $options = []): ColumnBuilderInterface
+    {
         $columnType = $this->columnRegistry->getType($columnTypeClass);
-        $optionsResolver = clone $columnType->getOptionsResolver();
-        $resolvedOptions = $optionsResolver->resolve($options);
-        $column = new Column();
+        $builder = $columnType->createBuilder($name, $options);
 
-        $column->setName($name);
-        $column->setLabel($resolvedOptions['label']);
-        $column->setSortable($resolvedOptions['sortable']);
-        $column->setSearchable($resolvedOptions['searchable']);
-        $column->setValueResolver($resolvedOptions['value_resolver']);
+        $columnType->buildColumn($builder, $builder->getOptions());
 
-        return $column;
+        return $builder;
     }
 }

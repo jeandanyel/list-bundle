@@ -8,11 +8,17 @@ class Column implements ColumnInterface
     private string $label;
     private bool $sortable = false;
     private bool $searchable = false;
+    private array $options = [];
 
     /**
      * @var callable
      */
     private $valueResolver;
+
+    /**
+     * @var null|callable
+     */
+    private $valueFormatter;
 
     public function getName(): string
     {
@@ -74,10 +80,40 @@ class Column implements ColumnInterface
         return $this->valueResolver;
     }
 
+    public function setValueFormatter(?callable $valueFormatter): self
+    {
+        $this->valueFormatter = $valueFormatter;
+
+        return $this;
+    }
+
+    public function getValueFormatter(): ?callable
+    {
+        return $this->valueFormatter;
+    }
+
     public function getValue(mixed $object): mixed
     {
         $valueResolver = $this->getValueResolver();
+        $valueFormatter = $this->getValueFormatter();
+        $value = $valueResolver($object, $this);
 
-        return $valueResolver($object, $this);
+        if ($valueFormatter) {
+            $value = $valueFormatter($value, $this);
+        }
+            
+        return $value;
+    }
+
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    public function setOptions(array $options): self
+    {
+        $this->options = $options;
+
+        return $this;
     }
 }

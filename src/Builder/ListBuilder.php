@@ -77,7 +77,7 @@ class ListBuilder implements ListBuilderInterface
         
         foreach ($this->unresolvedColumns as $name => [$columnTypeClass, $options]) {
             $column = $this->columnFactory->create($name, $columnTypeClass, $options);
-            
+
             $list->addColumn($column);
         }
 

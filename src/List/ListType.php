@@ -12,9 +12,7 @@ class ListType extends AbstractListType
 {
     public function __construct(private EntityDataProvider $dataProvider) {}
 
-    public function buildList(ListBuilderInterface $builder, array $options): void
-    {
-    }
+    public function buildList(ListBuilderInterface $builder, array $options): void {}
 
     public function configureOptions(OptionsResolver $optionsResolver): void
     {

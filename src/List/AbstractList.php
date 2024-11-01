@@ -30,8 +30,6 @@ abstract class AbstractList implements ListInterface
 
     private ?Pagination $pagination = null;
 
-    // private ?Pagination $pagination = null;
-
     public function getType(): ListTypeInterface
     {
         return $this->type;
