@@ -12,27 +12,16 @@ class EntityDataProvider implements DataProviderInterface
 
     public function getData(ListInterface $list): array
     {
-        $data = [];
         $queryBuilder = $this->getQueryBuilder($list);
 
-        if ($list->getPagination() !== null) {
+        if ($list->isFetchDataFromRequest() && $list->getPagination() !== null) {
             $pagination = $list->getPagination();
 
             $queryBuilder->setFirstResult($pagination->getOffset());
             $queryBuilder->setMaxResults($pagination->getLimit());
         }
 
-        $result = $queryBuilder->getQuery()->getResult();
-
-        foreach ($result as $index => $entity) {
-            $data[$index] = [];
-
-            foreach ($list->getColumns() as $column) {
-                $data[$index][$column->getName()] = (string) $column->getValue($entity, $column->getName());
-            }
-        }
-
-        return $data;
+        return $queryBuilder->getQuery()->getResult();
     }
 
     public function getTotal(ListInterface $list): int

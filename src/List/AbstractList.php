@@ -14,19 +14,23 @@ abstract class AbstractList implements ListInterface
 
     private ?string $entityClass = null;
 
-    private DataProviderInterface $dataProvider;
+    private ?DataProviderInterface $dataProvider = null;
 
     /**
      * @var callable|null
      */
     private $queryBuilder = null;
 
-    private RequestHandlerInterface $requestHandler;
+    private bool $fetchDataFromRequest = false;
+
+    private ?RequestHandlerInterface $requestHandler = null;
 
     /**
      * @var array<string, Column>
      */
     private array $columns = [];
+
+    private ?array $data = null;
 
     private ?Pagination $pagination = null;
 
@@ -54,12 +58,12 @@ abstract class AbstractList implements ListInterface
         return $this;
     }
 
-    public function getDataProvider(): DataProviderInterface
+    public function getDataProvider(): ?DataProviderInterface
     {
         return $this->dataProvider;
     }
 
-    public function setDataProvider(DataProviderInterface $dataProvider): self
+    public function setDataProvider(?DataProviderInterface $dataProvider = null): self
     {
         $this->dataProvider = $dataProvider;
 
@@ -78,16 +82,28 @@ abstract class AbstractList implements ListInterface
         return $this;
     }
 
-    public function setRequestHandler(RequestHandlerInterface $requestHandler): self
+    public function isFetchDataFromRequest(): bool
     {
-        $this->requestHandler = $requestHandler;
+        return $this->fetchDataFromRequest;
+    }
+
+    public function setFetchDataFromRequest(bool $fetchDataFromRequest): self
+    {
+        $this->fetchDataFromRequest = $fetchDataFromRequest;
 
         return $this;
     }
 
-    public function getRequestHandler(): RequestHandlerInterface
+    public function getRequestHandler(): ?RequestHandlerInterface
     {
         return $this->requestHandler;
+    }
+
+    public function setRequestHandler(?RequestHandlerInterface $requestHandler = null): self
+    {
+        $this->requestHandler = $requestHandler;
+
+        return $this;
     }
 
     public function addColumn(Column $column): self
@@ -114,9 +130,34 @@ abstract class AbstractList implements ListInterface
         return $this;
     }
 
+    public function setData(?array $data = null): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
     public function getData(): array
     {
-        return $this->dataProvider->getData($this);
+        $data = [];
+
+        if ($this->data !== null) {
+            $data = $this->data;
+        }
+
+        if ($this->dataProvider !== null) {
+            $data = $this->dataProvider->getData($this);
+        }
+
+        foreach ($data as $index => $object) {
+            $data[$index] = [];
+
+            foreach ($this->getColumns() as $column) {
+                $data[$index][$column->getName()] = (string) $column->getValue($object);
+            }
+        }
+
+        return $data;        
     }
 
     abstract public function createView(): ListViewInterface;

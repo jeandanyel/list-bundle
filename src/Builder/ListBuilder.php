@@ -55,16 +55,25 @@ class ListBuilder implements ListBuilderInterface
 
         $list->setType($this->type->getInnerType());
         $list->setEntityClass($this->options['entity_class']);
-        $list->setDataProvider($this->options['data_provider']);
-        $list->setQueryBuilder($this->options['query_builder']);
 
-        $requestHandler = $this->options['request_handler'];
-
-        if (!$requestHandler) {
-            $requestHandler = $this->requestHandlerMapper->get($listClass);
+        if (!empty($this->options['data'])) {
+            $list->setData($this->options['data']);
+        } else {
+            $list->setDataProvider($this->options['data_provider']);
+            $list->setQueryBuilder($this->options['query_builder']);
         }
-        
-        $list->setRequestHandler($requestHandler);
+
+        if ($this->options['fetch_data_from_request'] === true) {
+            $list->setFetchDataFromRequest(true);
+
+            $requestHandler = $this->options['request_handler'];
+
+            if (!$requestHandler) {
+                $requestHandler = $this->requestHandlerMapper->get($listClass);
+            }
+            
+            $list->setRequestHandler($requestHandler);
+        }
 
         if ($this->options['pagination'] === true) {
             $pagination = new Pagination();

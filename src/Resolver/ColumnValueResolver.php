@@ -9,8 +9,14 @@ class ColumnValueResolver implements ColumnValueResolverInterface
 {
     public function __construct(private PropertyAccessorInterface $propertyAccessor) {}
 
-    public function resolve(object $object, ColumnInterface $column): mixed
+    public function resolve(object|array $object, ColumnInterface $column): mixed
     {
-        return $this->propertyAccessor->getValue($object, $column->getName());
+        $columnName = $column->getName();
+
+        if (is_array($object)) {
+            $columnName = "[$columnName]";
+        }
+
+        return $this->propertyAccessor->getValue($object, $columnName);
     }
 }

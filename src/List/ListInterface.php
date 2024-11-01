@@ -19,17 +19,21 @@ interface ListInterface
 
     public function getEntityClass(): ?string;
 
-    public function setDataProvider(DataProviderInterface $dataProvider): self;
+    public function setDataProvider(?DataProviderInterface $dataProvider = null): self;
 
-    public function getDataProvider(): DataProviderInterface;
+    public function getDataProvider(): ?DataProviderInterface;
 
     public function getQueryBuilder(): ?callable;
 
     public function setQueryBuilder(?callable $queryBuilder): self;
 
-    public function setRequestHandler(RequestHandlerInterface $requestHandler): self;
+    public function isFetchDataFromRequest(): bool;
 
-    public function getRequestHandler(): RequestHandlerInterface;
+    public function setFetchDataFromRequest(bool $fetchDataFromRequest): self;
+
+    public function getRequestHandler(): ?RequestHandlerInterface;
+
+    public function setRequestHandler(?RequestHandlerInterface $requestHandler = null): self;
 
     public function addColumn(Column $column): self;
 
@@ -41,6 +45,8 @@ interface ListInterface
     public function getPagination(): ?Pagination;
 
     public function setPagination(?Pagination $pagination): self;
+
+    public function setData(?array $data = null): self;
 
     public function getData(): array;
 

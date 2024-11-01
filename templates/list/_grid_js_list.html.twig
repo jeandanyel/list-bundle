@@ -10,21 +10,27 @@
 
     const grid = new Grid({
         columns: {{ list.columns|json_encode|raw }},
-        server: {
-            url: '/list/get-data', // todo: generate route
-            method: 'POST',
-            body: formData,
-            then: response => response.data.map(row => [...row]),
-            total: response => response.total,
-        },
-        {% if list.pagination is not null %}
-        pagination: {
-            limit: {{ list.pagination.limit }},
-            page: {{ list.pagination.page }},
+        {% if list.fetchDataFromRequest %}
             server: {
-                url: (prev, page) => `${prev}?page=${page}`
+                url: '/list/get-data', // todo: generate route
+                method: 'POST',
+                body: formData,
+                then: response => response.data.map(row => [...row]),
+                total: response => response.total,
+            },
+        {% else %}
+            data: {{ list.data|json_encode|raw }},
+        {% endif %}
+        {% if list.pagination is not null %}
+            pagination: {
+                limit: {{ list.pagination.limit }},
+                page: {{ list.pagination.page }},
+                {% if list.fetchDataFromRequest %}
+                    server: {
+                        url: (prev, page) => `${prev}?page=${page}`
+                    }
+                {% endif %}
             }
-        }
         {% endif %}
     });
 

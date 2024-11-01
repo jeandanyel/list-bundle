@@ -44,6 +44,11 @@ class GridJsListView implements ListViewInterface
         return $array;
     }
 
+    public function isFetchDataFromRequest(): bool
+    {
+        return $this->list->isFetchDataFromRequest();
+    }
+
     public function getData(): array
     {
         $array = [];

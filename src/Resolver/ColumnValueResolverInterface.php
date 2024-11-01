@@ -6,5 +6,5 @@ use Jeandanyel\ListBundle\Column\ColumnInterface;
 
 interface ColumnValueResolverInterface
 {
-    public function resolve(object $object, ColumnInterface $column): mixed;
+    public function resolve(object|array $object, ColumnInterface $column): mixed;
 }
