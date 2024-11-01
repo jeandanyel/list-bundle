@@ -12,7 +12,7 @@
         columns: {{ list.columns|json_encode|raw }},
         {% if list.fetchDataFromRequest %}
             server: {
-                url: '/list/get-data', // todo: generate route
+                url: '/list/fetch-data', // TODO: generate route
                 method: 'POST',
                 body: formData,
                 then: response => response.data.map(row => [...row]),

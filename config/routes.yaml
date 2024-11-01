@@ -1,0 +1,4 @@
+jeandanyel_list_fetch_data:
+    path: /list/fetch-data
+    controller: Jeandanyel\ListBundle\Controller\ListController::fetchData
+    methods: [POST]

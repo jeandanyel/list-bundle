@@ -11,7 +11,7 @@ class ListController extends AbstractController
 {
     public function __construct(private ListFactoryInterface $listFactory) {}
 
-    public function getData(Request $request): Response
+    public function fetchData(Request $request): Response
     {
         $listTypeClass = $request->request->get('list_type_class');
         $list = $this->listFactory->create($listTypeClass);
