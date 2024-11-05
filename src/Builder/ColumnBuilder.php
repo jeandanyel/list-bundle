@@ -52,6 +52,7 @@ class ColumnBuilder implements ColumnBuilderInterface
         $column->setLabel($this->options['label'] ?? $this->name);
         $column->setSortable($this->options['sortable']);
         $column->setSearchable($this->options['searchable']);
+        $column->setOrder($this->options['order']);
         $column->setValueResolver($this->options['value_resolver']);
         $column->setValueFormatter($this->options['value_formatter']);
         $column->setOptions($this->options);

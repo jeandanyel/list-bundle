@@ -27,12 +27,37 @@
                 page: {{ list.pagination.page }},
                 {% if list.fetchDataFromRequest %}
                     server: {
-                        url: (prev, page) => `${prev}?page=${page}`
+                        url: (url, page) => addUrlParameter(url, 'page', page)
                     }
                 {% endif %}
-            }
+            },
         {% endif %}
+        sort: {
+            multiColumn: false,
+            {% if list.fetchDataFromRequest %}
+                server: {
+                    url: (url, columns) => {
+                        if (!columns.length) return url;
+
+                        const column = columns[0];
+                        const direction = column.direction === 1 ? 'asc' : 'desc';
+
+                        url = addUrlParameter(url, `sort[${column.index}]`, direction);
+
+                        return url;
+                    }
+                }
+            {% endif %}
+        },
     });
 
     grid.render(document.getElementById("transaction-list"));
+
+    function addUrlParameter(url, name, value) {
+        const separator = url.includes('?') ? '&' : '?';
+
+        value = encodeURIComponent(value);
+        
+        return `${url}${separator}${name}=${value}`;
+    }
 </script>

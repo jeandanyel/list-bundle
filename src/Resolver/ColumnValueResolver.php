@@ -11,12 +11,21 @@ class ColumnValueResolver implements ColumnValueResolverInterface
 
     public function resolve(object|array $object, ColumnInterface $column): mixed
     {
-        $columnName = $column->getName();
+        $properties = explode('.', $column->getName());
+        $value = $object;
 
-        if (is_array($object)) {
-            $columnName = "[$columnName]";
+        foreach ($properties as $property) {
+            if (is_array($value)) {
+                $property = "[$property]";
+            }
+
+            $value = $this->propertyAccessor->getValue($value, $property);
+
+            if ($value === null) {
+                break;
+            }
         }
 
-        return $this->propertyAccessor->getValue($object, $columnName);
+        return $value;
     }
 }

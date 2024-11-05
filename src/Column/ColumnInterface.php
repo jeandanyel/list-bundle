@@ -20,6 +20,10 @@ interface ColumnInterface
 
     public function setSearchable(bool $searchable): self;
 
+    public function getOrder(): ?string;
+
+    public function setOrder(?string $order): self;
+
     public function setValueResolver(callable $valueResolver): self;
 
     public function getValueResolver(): callable;

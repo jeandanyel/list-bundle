@@ -8,6 +8,7 @@ class Column implements ColumnInterface
     private string $label;
     private bool $sortable = false;
     private bool $searchable = false;
+    private ?string $order = null;
     private array $options = [];
 
     /**
@@ -64,6 +65,18 @@ class Column implements ColumnInterface
     public function setSearchable(bool $searchable): self
     {
         $this->searchable = $searchable;
+
+        return $this;
+    }
+
+    public function getOrder(): ?string
+    {
+        return $this->order;
+    }
+
+    public function setOrder(?string $order): self
+    {
+        $this->order = $order;
 
         return $this;
     }

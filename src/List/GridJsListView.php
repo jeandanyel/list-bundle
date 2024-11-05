@@ -35,9 +35,20 @@ class GridJsListView implements ListViewInterface
         $array = [];
 
         foreach ($this->list->getColumns() as $column) {
+            $sort = false;
+
+            if ($column->isSortable()) {
+                $sort = true;
+
+                if ($column->getOrder()) {
+                    $sort = ['direction' => 'asc'];
+                }
+            }
+
             $array[] = [
+                'id' => $column->getName(),
                 'name' => $column->getLabel(),
-                'sort' => $column->isSortable(),
+                'sort' => $sort,
             ];
         }
 

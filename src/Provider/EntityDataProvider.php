@@ -13,12 +13,33 @@ class EntityDataProvider implements DataProviderInterface
     public function getData(ListInterface $list): array
     {
         $queryBuilder = $this->getQueryBuilder($list);
+        $rootAlias = $queryBuilder->getRootAliases()[0];
 
         if ($list->isFetchDataFromRequest() && $list->getPagination() !== null) {
             $pagination = $list->getPagination();
 
             $queryBuilder->setFirstResult($pagination->getOffset());
             $queryBuilder->setMaxResults($pagination->getLimit());
+        }
+
+        foreach ($list->getColumns() as $column) {
+            $relations = explode('.', $column->getName());
+            $property = array_pop($relations);
+            $alias = $rootAlias;
+
+            foreach ($relations as $relation) {
+                $relationAlias = "{$alias}_{$relation}";
+
+                if (!in_array($relationAlias, $queryBuilder->getAllAliases())) {
+                    $queryBuilder->join("{$alias}.{$relation}", $relationAlias);
+                }
+
+                $alias = $relationAlias;
+            }
+            
+            if ($column->getOrder() !== null) {
+                $queryBuilder->addOrderBy("$alias.$property", $column->getOrder());
+            }
         }
 
         return $queryBuilder->getQuery()->getResult();
