@@ -61,7 +61,7 @@ class ArticleListType extends AbstractListType
 }
 ```
 
-To create a list, use the `create` method of the [`ListFactory`](../src/Factory/ListFactory.php service in your controllers. Then, call the `createView` method to pass the view data to your Twig template.
+To create a list, use the `create` method of the [`ListFactory`](../src/Factory/ListFactory.php) service in your controllers. Then, call the `createView` method to pass the view data to your Twig template.
 
 ```php
 namespace App\Controller;
