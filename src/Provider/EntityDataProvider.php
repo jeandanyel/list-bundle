@@ -4,6 +4,8 @@ namespace Jeandanyel\ListBundle\Provider;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Jeandanyel\ListBundle\Column\Column;
+use Jeandanyel\ListBundle\Helper\StringHelper;
 use Jeandanyel\ListBundle\List\ListInterface;
 
 class EntityDataProvider implements DataProviderInterface
@@ -23,22 +25,16 @@ class EntityDataProvider implements DataProviderInterface
         }
 
         foreach ($list->getColumns() as $column) {
-            $relations = explode('.', $column->getName());
-            $property = array_pop($relations);
-            $alias = $rootAlias;
+            $hasRelations = count(explode('.', $column->getName())) > 1;
 
-            foreach ($relations as $relation) {
-                $relationAlias = "{$alias}_{$relation}";
-
-                if (!in_array($relationAlias, $queryBuilder->getAllAliases())) {
-                    $queryBuilder->join("{$alias}.{$relation}", $relationAlias);
-                }
-
-                $alias = $relationAlias;
+            if ($hasRelations) {
+                $propertyPath = $this->join($queryBuilder, $column);
+            } else {
+                $propertyPath = sprintf('%s.%s', $rootAlias, StringHelper::snakeToCamel($column->getName()));
             }
-            
+
             if ($column->getOrder() !== null) {
-                $queryBuilder->addOrderBy("$alias.$property", $column->getOrder());
+                $queryBuilder->addOrderBy($propertyPath, $column->getOrder());
             }
         }
 
@@ -71,5 +67,33 @@ class EntityDataProvider implements DataProviderInterface
         }
 
         return $queryBuilder;
+    }
+
+    private function join(QueryBuilder $queryBuilder, Column $column): string
+    {
+        $rootAlias = $queryBuilder->getRootAliases()[0];
+        $propertyPath = StringHelper::snakeToCamel($column->getName());
+        $relations = explode('.', $propertyPath);
+        $property = array_pop($relations);
+        $alias = $rootAlias;
+
+        foreach ($relations as $relation) {
+            $joins = $queryBuilder->getDQLPart('join')[$rootAlias] ?? [];
+
+            foreach ($joins as $join) {
+                if ($join->getJoin() === sprintf('%s.%s', $alias, $relation)) {
+                    $alias = $join->getAlias();
+
+                    continue 2;
+                }
+            }
+
+            $relationPath = sprintf('%s.%s', $alias, $relation);
+            $alias = sprintf('%s_%s', $alias, $relation);
+
+            $queryBuilder->join($relationPath, $alias);
+        }
+
+        return sprintf('%s.%s', $alias, $property);
     }
 }
