@@ -22,7 +22,11 @@ class Article
 
 ```
 
-Create a list type by extending the [`AbstractListType`](../src/List/AbstractListType.php) class, and set the `entity_class` option to the appropriate entity class
+## Create a list type class
+
+Create a list type by extending the [`AbstractListType`](../src/List/AbstractListType.php) class.
+In the `buildList` method, use the `add` method of the `ListBuilder` to add and configure the list columns.
+Then, in the `configureOptions` method, set the `entity_class` option to the appropriate entity class (e.g., `Article::class`).
 
 ```php
 namespace App\List;
@@ -61,7 +65,18 @@ class ArticleListType extends AbstractListType
 }
 ```
 
-To create a list, use the `create` method of the [`ListFactory`](../src/Factory/ListFactory.php) service in your controllers. Then, call the `createView` method to pass the view data to your Twig template.
+> [!NOTE]
+> Note that the `entity_class` option is optional. You can use the
+> `data` option to pass custom data directly to the list, or configure
+> the `data_provider` option to specify a service that provides data
+> from a different source.
+> 
+> Refer to the [list of available options](./list-type-options.md) for further configuration of your list type.
+
+## Create a list in a controller
+
+To create a list, use the `create` method of the [`ListFactory`](../src/Factory/ListFactory.php) service, passing the list type as an argument (e.g., `ArticleListType::class`). 
+Then, call the `createView` method to generate the view data and pass it to your Twig template.
 
 ```php
 namespace App\Controller;
@@ -87,7 +102,9 @@ class ArticleController extends AbstractController
 
 ```
 
-Finally, in the Twig template, use the `list` function to render the list.
+## Render a list in a Twig template
+
+Finally, in your Twig template, use the `list` function to render the list.
 
 ```twig
 {{ list(list) }}
