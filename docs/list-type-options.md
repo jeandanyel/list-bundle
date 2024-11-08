@@ -1,5 +1,5 @@
 
-# List options
+# List type options
 
 The following table summarizes the available options for the `ListType` and their descriptions:
 
