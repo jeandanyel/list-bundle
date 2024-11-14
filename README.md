@@ -8,6 +8,8 @@ The system is built to integrate with nearly any list library, though currently,
 
 This bundle is actively under development, with the next feature being the addition of filters and search functionality. Contributions to the project are welcome 🥳.
 
+- [Installation](docs/installation.md)
+    - [Install list library dependencies](docs/installation.md#install-list-library-dependencies)
 - [Build a list](docs/build-a-list.md)
     - [Create a list type class](docs/build-a-list.md#create-a-list-type-class)
     - [Create a list in a controller](docs/build-a-list.md#create-a-list-in-a-controller)

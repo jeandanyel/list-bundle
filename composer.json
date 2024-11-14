@@ -16,7 +16,6 @@
         "doctrine/doctrine-bundle": "^2.12",
         "doctrine/orm": "^3.1",
         "symfony/translation": "^6.4|^7.0",
-        "symfony/asset-mapper": "^6.4|^7.0",
         "symfony/asset": "^6.4|^7.0",
         "symfony/form": "^6.4|^7.0",
         "symfony/framework-bundle": "^6.4|^7.0",
@@ -26,7 +25,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "^6.4 || ^7.0"
         }
     }
