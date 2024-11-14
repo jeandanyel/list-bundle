@@ -1,5 +1,7 @@
 {
     "name": "jeandanyel/list-bundle",
+    "license": "MIT",
+    "description": "A flexible Symfony bundle for generating and customizing lists, capable of listing both Doctrine entities and data from external sources.",
     "autoload": {
         "psr-4": {
             "Jeandanyel\\ListBundle\\": "src/"
@@ -28,5 +30,15 @@
             "allow-contrib": true,
             "require": "^6.4 || ^7.0"
         }
-    }
+    },
+    "support": {
+        "issues": "https://github.com/jeandanyel/list-bundle/issues"
+    },
+    "authors": [
+        {
+            "name": "Jean-Danyel Routhier",
+            "email": "jeandanyel.routhier@gmail.com",
+            "role": "Developer"
+        }
+    ]
 }
